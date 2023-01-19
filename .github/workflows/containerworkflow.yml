@@ -32,6 +32,24 @@ jobs:
              ${{ env.IMAGE_NAME }}
             file: dockersampledemo/Dockerfile
             context: ./
-        
-        # - run: docker build . -t ${{ env.IMAGE_NAME }}
-        # - run: docker push ${{ env.IMAGE_NAME }}
+  
+    deploy:
+   
+      runs-on: ubuntu-latest
+      needs: build-deploy-image
+    
+      steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.SAMPLECONTAINERAPP_AZURE_CREDENTIALS }}
+
+
+      - name: Deploy to containerapp
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp registry set -n sample-worker -g SampleContainerApps --server ${{ ACR_NAME }} --username  ${{ secrets
+            .SERVICE_PRINCIPAL_ID }} --password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
+            az containerapp update -n sample-worker -g SampleContainerApps --image ${{ env.IMAGE_NAME }}
