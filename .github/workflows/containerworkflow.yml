@@ -24,5 +24,15 @@ jobs:
             username: ${{ secrets.SERVICE_PRINCIPAL_ID }}
             password: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
 
-        - run: docker build . -t ${{ env.IMAGE_NAME }}
-        - run: docker push ${{ env.IMAGE_NAME }}
+        - name: Build and push container image to registry
+          uses: docker/build-push-action@v2
+          with:
+            push: true
+            tags: |
+             ${{ secrets.ACR_LOGON_SERVER }}/webapp:${{ github.sha }}
+             ${{ secrets.ACR_LOGON_SERVER }}/webapp:latest
+            file: dockersampledemo/Dockerfile
+            context: ./
+        
+        # - run: docker build . -t ${{ env.IMAGE_NAME }}
+        # - run: docker push ${{ env.IMAGE_NAME }}
