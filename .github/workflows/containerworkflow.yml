@@ -30,7 +30,6 @@ jobs:
             push: true
             tags: |
              ${{ secrets.ACR_LOGON_SERVER }}/webapp:${{ github.sha }}
-             ${{ secrets.ACR_LOGON_SERVER }}/webapp:latest
             file: dockersampledemo/Dockerfile
             context: ./
         
