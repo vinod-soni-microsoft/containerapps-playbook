@@ -42,9 +42,8 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          client-id: ${{ secrets.SERVICE_PRINCIPAL_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
 
 
       - name: Deploy to containerapp
@@ -52,6 +51,4 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp registry set -n sample-worker -g SampleContainerApps --server ${{ secrets.ACR_NAME }} --username  ${{ secrets
-            .SERVICE_PRINCIPAL_ID }} --password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
-            az containerapp update -n sample-worker -g SampleContainerApps --image ${{ env.IMAGE_NAME }}
+            az containerapp create -n sample-worker -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment dev --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ secrets.SERVICE_PRINCIPAL_ID }} --registry-password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }} 
