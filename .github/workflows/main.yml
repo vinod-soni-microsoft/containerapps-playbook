@@ -48,13 +48,15 @@ jobs:
       runs-on: ubuntu-latest
       needs: build-deploy-image
     
-    Steps:
-       uses: ./.github/workflows/customer-container-deploy.yml
-       with:
-         CUSTOMER-CONTAINER-NAME: NewCustomer-1
-         CUSTOMER-ENV-NAME: customersManagedEnv-8fe5
-         RG_NAME: ${{ secrets.RG_NAME }}
-         RG_LOCATION: ${{ secrets.RG_LOCATION }}
-         IMAGE_NAME: ${{ env.IMAGE_NAME }}
-         REGISTRY_SERVER-NAME: ${{ secrets.ACR_NAME }}.azurecr.io
-       secrets: inherit
+      steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: ./.github/workflows/customer-container-deploy.yml
+          with:
+           CUSTOMER-CONTAINER-NAME: NewCustomer-1
+           CUSTOMER-ENV-NAME: customersManagedEnv-8fe5
+           RG_NAME: ${{ secrets.RG_NAME }}
+           RG_LOCATION: ${{ secrets.RG_LOCATION }}
+           IMAGE_NAME: ${{ env.IMAGE_NAME }}
+           REGISTRY_SERVER-NAME: ${{ secrets.ACR_NAME }}.azurecr.io
+
