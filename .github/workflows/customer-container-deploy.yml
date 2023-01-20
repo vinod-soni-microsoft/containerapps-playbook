@@ -1,0 +1,48 @@
+name: Customer Container Deploy
+on:
+  workflow_call:
+    inputs:
+      CUSTOMER-CONTAINER-NAME:
+        required: true
+        type: string
+      CUSTOMER-ENV-NAME:
+        required: false
+        type: string
+      RG_NAME:
+        required: false
+        type: string
+      RG_LOCATIO:
+        required: true
+        type: string
+      IMAGE_NAME:
+        required: true
+        type: string
+      REGISTRY_SERVER-NAME:
+        required: true
+        type: string
+
+jobs:
+    
+    deploy:
+   
+      runs-on: ubuntu-latest
+
+    
+      steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+      - uses: Azure/get-keyvault-secrets@v1
+        with: 
+          keyvault: "containerappsvault"
+          secrets: 'SERVICE-PRINCIPAL-ID, SERVICE-PRINCIPAL-PASSWORD'
+        id: myAppsDeploySecrets
+
+      - name: Deploy to containerapp
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp env create --name ${{  vars.CUSTOMER-CONTAINER-NAME }} --resource-group ${{  vars.RG_NAME }} --location ${{  vars.RG_LOCATION }}
+            az containerapp create -n sample-worker -g ${{ vars.RG_NAME }} --image ${{ vars.IMAGE_NAME }} --environment ${{  vars.CONTAINERAPPS_ENVIRONMENT }} --registry-server ${{ vars.REGISTRY_SERVER-NAME }} --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
