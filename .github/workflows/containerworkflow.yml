@@ -52,4 +52,4 @@ jobs:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             az containerapp env create --name ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }}
-            az containerapp create -n sample-worker -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ secrets.SERVICE_PRINCIPAL_ID }} --registry-password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }} --target-port 80 \ --ingress 'external' \ --query properties.configuration.ingress.fqdn 
+            az containerapp create -n sample-worker -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ secrets.SERVICE_PRINCIPAL_ID }} --registry-password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }} --target-port 80 \ --ingress external \ --query properties.configuration.ingress.fqdn 
