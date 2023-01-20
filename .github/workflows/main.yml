@@ -49,16 +49,15 @@ jobs:
       needs: build-deploy-image
     
       steps:
-          
-        # call customer
-        - name: 'call customer-container-deploy.yml'
-        - uses: actions/checkout@v2
-        - uses: ./.github/workflows/customer-container-deploy.yml
-          with:
-           CUSTOMER-CONTAINER-NAME: NewCustomer-1
-           CUSTOMER-ENV-NAME: customersManagedEnv-8fe5
-           RG_NAME: ${{ secrets.RG_NAME }}
-           RG_LOCATION: ${{ secrets.RG_LOCATION }}
-           IMAGE_NAME: ${{ env.IMAGE_NAME }}
-           REGISTRY_SERVER-NAME: ${{ secrets.ACR_NAME }}.azurecr.io
+      - name: 'call customer-container-deploy.yml'
+      - uses: actions/checkout@v2
+      - uses: ./.github/workflows/customer-container-deploy.yml
+        with:
+          CUSTOMER-CONTAINER-NAME: NewCustomer-1
+          CUSTOMER-ENV-NAME: customersManagedEnv-8fe5
+          RG_NAME: ${{ secrets.RG_NAME }}
+          RG_LOCATION: ${{ secrets.RG_LOCATION }}
+          IMAGE_NAME: ${{ env.IMAGE_NAME }}
+          REGISTRY_SERVER-NAME: ${{ secrets.ACR_NAME }}.azurecr.io
+     
 
