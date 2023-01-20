@@ -49,8 +49,8 @@ jobs:
       needs: build-deploy-image
     
       steps:
-        # checkout the repo
-        - name: 'Checkout GitHub Action'
+        # call customer
+        - name: 'call customer-container-deploy.yml'
           uses: ./.github/workflows/customer-container-deploy.yml
           with:
            CUSTOMER-CONTAINER-NAME: NewCustomer-1
