@@ -49,10 +49,10 @@ jobs:
       needs: build-deploy-image
     
     Steps:
-       uses: ./.github/workflows/customer-deploy.yaml
+       uses: ./.github/workflows/customer-container-deploy.yml
        with:
          CUSTOMER-CONTAINER-NAME: NewCustomer-1
-         CUSTOMER-ENV-NAME: ${{ secrets.CONTAINERAPPS_ENVIRONMENT }}
+         CUSTOMER-ENV-NAME: customersManagedEnv-8fe5
          RG_NAME: ${{ secrets.RG_NAME }}
          RG_LOCATION: ${{ secrets.RG_LOCATION }}
          IMAGE_NAME: ${{ env.IMAGE_NAME }}
