@@ -1,4 +1,4 @@
-name: Customer Container Deploy
+name: Customer Container Deploy Main
 on:
   workflow_call:
     inputs:
