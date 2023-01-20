@@ -1,0 +1,55 @@
+name: Container Workflow
+on:
+  push:
+  workflow_dispatch:
+
+env:
+  ACR_LOGON_SERVER: ${{ secrets.ACR_NAME }}.azurecr.io
+  IMAGE_NAME: ${{ secrets.ACR_NAME }}.azurecr.io/webapp:${{ github.sha }}
+
+jobs:
+    build-deploy-image:
+        
+        runs-on: ubuntu-latest
+        
+        steps:
+        # checkout the repo
+        - name: 'Checkout GitHub Action'
+          uses: actions/checkout@master
+          
+        - name: 'Build and push image'
+          uses: azure/docker-login@v1
+          with:
+            login-server: ${{ env.ACR_LOGON_SERVER }}
+            username: ${{ secrets.SERVICE_PRINCIPAL_ID }}
+            password: ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }}
+
+        - name: Build and push container image to registry
+          uses: docker/build-push-action@v2
+          with:
+            push: true
+            tags: |
+             ${{ env.IMAGE_NAME }}
+            file: dockersampledemo/Dockerfile
+            context: ./
+  
+    deploy:
+   
+      runs-on: ubuntu-latest
+      needs: build-deploy-image
+    
+      steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+
+
+      - name: Deploy to containerapp
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az config set extension.use_dynamic_install=yes_without_prompt
+            az containerapp env create --name ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }}
+            az containerapp create -n sample-worker -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ secrets.SERVICE_PRINCIPAL_ID }} --registry-password ${{ secrets.SERVICE_PRINCIPAL_PASSWORD }} --target-port 80 --ingress external 
