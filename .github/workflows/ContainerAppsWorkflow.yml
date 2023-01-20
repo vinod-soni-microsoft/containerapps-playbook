@@ -1,4 +1,4 @@
-name: Container Apps Workflow - New
+name: Container Apps Workflow
 on:
   workflow_dispatch:
 
