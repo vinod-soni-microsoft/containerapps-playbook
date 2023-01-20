@@ -49,8 +49,6 @@ jobs:
       needs: build-deploy-image
     
       steps:
-        - name: 'Checkout GitHub Action'
-          uses: actions/checkout@master
           
         # call customer
         - name: 'call customer-container-deploy.yml'
