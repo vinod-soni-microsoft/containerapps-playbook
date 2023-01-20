@@ -49,7 +49,6 @@ jobs:
       needs: build-deploy-image
     
       steps:
-      - name: 'call customer-container-deploy.yml'
       - uses: actions/checkout@v2
       - uses: ./.github/workflows/customer-container-deploy.yml
         with:
