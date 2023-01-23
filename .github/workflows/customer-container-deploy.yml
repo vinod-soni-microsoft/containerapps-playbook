@@ -46,5 +46,5 @@ jobs:
             INFRASTRUCTURE_SUBNET_ID=$(az network vnet subnet show --resource-group ${{ secrets.RG_NAME }} --vnet-name infrastructure-vnet --name infrastructure-subnet --query "id" -o tsv | tr -d '[:space:]')
             echo "Subnet-id" $INFRASTRUCTURE_SUBNET_ID
             az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }} --infrastructure-subnet-resource-id $INFRASTRUCTURE_SUBNET_ID --internal-only
-            eacho "Last step - container app setup"
+            echo "Last step - container app setup"
             az containerapp create --name ${{ inputs.CUSTOMER-CONTAINER-NAME }} --resource-group ${{ secrets.RG_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
