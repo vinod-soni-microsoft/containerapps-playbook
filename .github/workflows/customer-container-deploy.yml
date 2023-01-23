@@ -11,7 +11,7 @@ on:
       RG_NAME:
         required: false
         type: string
-      RG_LOCATIO:
+      RG_LOCATION:
         required: true
         type: string
       IMAGE_NAME:
