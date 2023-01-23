@@ -37,6 +37,14 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.azure-creds }}
+          
+      - name: Print vairables
+        run: |
+          echo "This is RG_NAME1" $inputs.RG_NAME
+          echo "This is RG_NAME2" ${{  inputs.RG_NAME }}
+
+
+      
       - uses: Azure/get-keyvault-secrets@v1
         with: 
           keyvault: "containerappsvault"
