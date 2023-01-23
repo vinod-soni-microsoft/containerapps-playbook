@@ -63,6 +63,17 @@ jobs:
           image-name: ${{ steps.print-var.outputs.image-name }}
           acr-server: ${{ steps.print-var.outputs.acr-server }}
           
+    Hello:
+    
+      needs: expose-env
+      runs-on: ubuntu-latest
+      
+      steps:
+        - name: Print vairables in main.yml
+          run: |
+            echo "This is RG_NAME1" $needs.expose-env.outputs.rg-name
+            echo "This is RG_NAME2" ${{ needs.expose-env.outputs.rg-name }}
+    
     deploy:
    
 
