@@ -76,5 +76,7 @@ jobs:
         RG_LOCATION: ${{ needs.expose-env.outputs.location-name }}
         IMAGE_NAME: ${{ needs.expose-env.outputs.image-name }}
         REGISTRY_SERVER-NAME: ${{ needs.expose-env.outputs.acr-server }}
+      secrets:
+        azure-creds: ${{ secrets.AZURE_CREDENTIALS }}
      
 
