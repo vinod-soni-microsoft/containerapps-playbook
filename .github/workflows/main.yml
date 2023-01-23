@@ -54,6 +54,8 @@ jobs:
       with:
         CUSTOMER-CONTAINER-NAME: customer-pqr
         CUSTOMER-ENV-NAME: customersManagedEnv-PQR
+        VNET-NAME: infrastructure-vnet
+        SUBNET-NAME: infrastructure-net
       secrets: inherit
         
      
