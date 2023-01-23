@@ -52,7 +52,7 @@ jobs:
     
       uses: ./.github/workflows/customer-container-deploy.yml
       with:
-        CUSTOMER-CONTAINER-NAME: Customer-PQR
+        CUSTOMER-CONTAINER-NAME: customer-pqr
         CUSTOMER-ENV-NAME: customersManagedEnv-PQR
       secrets: inherit
         
