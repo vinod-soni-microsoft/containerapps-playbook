@@ -42,19 +42,39 @@ jobs:
              ${{ env.IMAGE_NAME }}
             file: dockersampledemo/Dockerfile
             context: ./
-  
+
+    expose-env:
+      
+        needs: build-deploy-image
+        runs-on: ubuntu-latest 
+        outputs:
+          rg-name: ${{ steps.print-var.outputs.rg-name }}
+          location-name: ${{ steps.print-var.outputs.location-name }}
+          image-name: ${{ steps.print-var.outputs.image-name }}
+          acr-server: ${{ steps.print-var.outputs.acr-server }}
+
+        steps:
+          - name: Print inputs passed to the reusable workflow
+            id: print-var
+            run: |
+              echo "::set-output name=rg-name::${{ secrets.RG_NAME }}"
+              echo "::set-output name=location-name::${{ secrets.RG_LOCATION }}"
+              echo "::set-output name=image-name::${{ env.IMATE_NAME }}"
+              echo "::set-output name=acr-server::${{ secrets.ACR_NAME }}.azurecr.io"
+
     deploy:
    
 
-      needs: build-deploy-image
+
+      needs: expose-env
     
       uses: ./.github/workflows/customer-container-deploy.yml
       with:
         CUSTOMER-CONTAINER-NAME: Customer-PQR
         CUSTOMER-ENV-NAME: customersManagedEnv-PQR
-        RG_NAME: ${{ secrets.RG_NAME }}
-        RG_LOCATION: ${{ secrets.RG_LOCATION }}
-        IMAGE_NAME: ${{ env.IMAGE_NAME }}
-        REGISTRY_SERVER-NAME: ${{ secrets.ACR_NAME }}.azurecr.io
+        RG_NAME: ${{ needs.expose-env.outputs.rg-name }}
+        RG_LOCATION: ${{ needs.expose-env.outputs.location-name }}
+        IMAGE_NAME: ${{ needs.expose-env.outputs.image-name }}
+        REGISTRY_SERVER-NAME: ${{ needs.expose-env.outputs.acr-server }}
      
 
