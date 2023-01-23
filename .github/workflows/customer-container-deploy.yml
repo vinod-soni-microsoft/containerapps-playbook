@@ -38,7 +38,7 @@ jobs:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
             echo "Cleanup Container Apps Env, SUBNET, VNET"
-            az containerapp env delete -n ${{  inputs.CUSTOMER-ENV-NAME }} -g ${{ secrets.RG_NAME }}
+            az containerapp env delete -n ${{  inputs.CUSTOMER-ENV-NAME }} -g ${{ secrets.RG_NAME }} --yes -y
             az network vnet subnet delete --name ${{  inputs.SUBNET-NAME }} --resource-group ${{ secrets.RG_NAME }} --vnet-name ${{  inputs.VNET-NAME }}
             echo "Create new instances"
             az network vnet create --resource-group ${{ secrets.RG_NAME }} --name ${{  inputs.VNET-NAME }} --location ${{  secrets.RG_LOCATION }} --address-prefix 10.0.0.0/16
