@@ -8,23 +8,6 @@ on:
       CUSTOMER-ENV-NAME:
         required: false
         type: string
-      RG_NAME:
-        required: false
-        type: string
-      RG_LOCATION:
-        required: true
-        type: string
-      IMAGE_NAME:
-        required: true
-        type: string
-      REGISTRY_SERVER-NAME:
-        required: true
-        type: string
-        
-    secrets:
-      azure-creds: 
-        required: true
-
 jobs:
     
     deploy:
@@ -36,12 +19,11 @@ jobs:
       - name: Azure Login
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.azure-creds }}
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
           
       - name: Print vairables
         run: |
-          echo "This is RG_NAME1" $inputs.RG_NAME
-          echo "This is RG_NAME2" ${{  inputs.RG_NAME }}
+          echo "This is RG_NAME2" ${{  secrets.RG_NAME }}
 
 
       
@@ -56,5 +38,5 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  inputs.RG_NAME }} --location ${{  inputs.RG_LOCATION }}
-            az containerapp create -n ${{ inputs.CUSTOMER-CONTAINER-NAME }} -g ${{ inputs.RG_NAME }} --image ${{ inputs.IMAGE_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ inputs.REGISTRY_SERVER-NAME }} --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
+            az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }}
+            az containerapp create -n ${{ inputs.CUSTOMER-CONTAINER-NAME }} -g ${{ secrets.RG_NAME }} --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
