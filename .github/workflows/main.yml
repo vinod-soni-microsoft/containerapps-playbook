@@ -47,21 +47,22 @@ jobs:
       
         needs: build-deploy-image
         runs-on: ubuntu-latest 
+
+        steps:
+          - name: Output variable
+            id: print-var
+            run: |
+              echo "rg-name=${{ secrets.RG_NAME }}" >> $GITHUB_OUTPUT
+              echo "location-name=${{ secrets.RG_LOCATION  }}" >> $GITHUB_OUTPUT
+              echo "image-name=${{ secrets.IMATE_NAME }}" >> $GITHUB_OUTPUT
+              echo "acr-server=${{ secrets.ACR_NAME }}.azurecr.io" >> $GITHUB_OUTPUT
+        
         outputs:
           rg-name: ${{ steps.print-var.outputs.rg-name }}
           location-name: ${{ steps.print-var.outputs.location-name }}
           image-name: ${{ steps.print-var.outputs.image-name }}
           acr-server: ${{ steps.print-var.outputs.acr-server }}
-
-        steps:
-          - name: Print inputs passed to the reusable workflow
-            id: print-var
-            run: |
-              echo "::set-output name=rg-name::${{ secrets.RG_NAME }}"
-              echo "::set-output name=location-name::${{ secrets.RG_LOCATION }}"
-              echo "::set-output name=image-name::${{ env.IMATE_NAME }}"
-              echo "::set-output name=acr-server::${{ secrets.ACR_NAME }}.azurecr.io"
-
+          
     deploy:
    
 
