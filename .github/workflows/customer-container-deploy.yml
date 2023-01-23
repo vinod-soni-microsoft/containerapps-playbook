@@ -6,13 +6,13 @@ on:
         required: true
         type: string
       CUSTOMER-ENV-NAME:
-        required: false
+        required: true
         type: string
       VNET-NAME:
-        required: false
+        required: true
         type: string
       SUBNET-NAME:
-        required: false
+        required: true
         type: string
 jobs:
     
@@ -20,19 +20,12 @@ jobs:
    
       runs-on: ubuntu-latest
 
-    
       steps:
       - name: Azure Login
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
           
-      - name: Print vairables
-        run: |
-          echo "This is RG_NAME2" ${{  secrets.RG_NAME }}
-
-
-      
       - uses: Azure/get-keyvault-secrets@v1
         with: 
           keyvault: "containerappsvault"
@@ -47,6 +40,6 @@ jobs:
             az network vnet create --resource-group ${{ secrets.RG_NAME }} --name ${{  inputs.VNET-NAME }} --location ${{  secrets.RG_LOCATION }} --address-prefix 10.0.0.0/16
             az network vnet subnet create --resource-group ${{ secrets.RG_NAME }} --vnet-name ${{  inputs.VNET-NAME }} --name ${{  inputs.SUBNET-NAME }} --address-prefixes 10.0.0.0/21
             INFRASTRUCTURE_SUBNET_ID=$(az network vnet subnet show --resource-group ${{ secrets.RG_NAME }} --vnet-name infrastructure-vnet --name infrastructure-subnet --query "id" -o tsv | tr -d '[:space:]')
-            echo $INFRASTRUCTURE_SUBNET_ID
+            echo "Subnet-id" $INFRASTRUCTURE_SUBNET_ID
             az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }} --infrastructure-subnet-resource-id $INFRASTRUCTURE_SUBNET_ID --internal-only
-            az containerapp create -n ${{ inputs.CUSTOMER-CONTAINER-NAME }} -g ${{ secrets.RG_NAME }} --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
+            az containerapp create --name ${{ inputs.CUSTOMER-CONTAINER-NAME }} --resource-group ${{ secrets.RG_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
