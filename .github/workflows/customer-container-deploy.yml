@@ -48,5 +48,5 @@ jobs:
         with:
           inlineScript: |
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp env create --name ${{  vars.CUSTOMER-ENV-NAME }} --resource-group ${{  vars.RG_NAME }} --location ${{  vars.RG_LOCATION }}
-            az containerapp create -n ${{ vars.CUSTOMER-CONTAINER-NAME }} -g ${{ vars.RG_NAME }} --image ${{ vars.IMAGE_NAME }} --environment ${{  vars.CUSTOMER-ENV-NAME }} --registry-server ${{ vars.REGISTRY_SERVER-NAME }} --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
+            az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  inputs.RG_NAME }} --location ${{  inputs.RG_LOCATION }}
+            az containerapp create -n ${{ inputs.CUSTOMER-CONTAINER-NAME }} -g ${{ inputs.RG_NAME }} --image ${{ inputs.IMAGE_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ inputs.REGISTRY_SERVER-NAME }} --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
