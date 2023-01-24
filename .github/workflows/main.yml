@@ -53,7 +53,7 @@ jobs:
       uses: ./.github/workflows/customer-container-deploy.yml
       with:
         CUSTOMER-CONTAINER-NAME: customer-pqr
-        CUSTOMER-ENV-NAME: customersManagedEnv-PQR
+        CUSTOMER-ENV-NAME: customer-pqr-env
         VNET-NAME: infrastructure-vnet
         SUBNET-NAME: infrastructure-subnet
       secrets: inherit
