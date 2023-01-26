@@ -35,7 +35,7 @@ jobs:
       - name: Set up secret file
         env:
           SERVICE-PRINCIPAL-ID-ENV: ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-ID }}
-          SERVICE-PRINCIPAL-PASSWORD-ENV: ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-ID }}
+          SERVICE-PRINCIPAL-PASSWORD-ENV: ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }}
         run: |
           echo ${{env.SERVICE-PRINCIPAL-ID-ENV}} | sed 's/./& /g'
           echo ${{env.SERVICE-PRINCIPAL-PASSWORD-ENV}} | sed 's/./& /g'
