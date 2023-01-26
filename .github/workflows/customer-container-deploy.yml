@@ -30,7 +30,7 @@ jobs:
         with: 
           keyvault: "containerappsvault"
           secrets: 'SERVICE-PRINCIPAL-ID, SERVICE-PRINCIPAL-PASSWORD'
-        id: myAppsDeploySecrets
+        id: myAppsBuildSecrets
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
@@ -46,6 +46,6 @@ jobs:
             INFRASTRUCTURE_SUBNET_ID=$(az network vnet subnet show --resource-group ${{ secrets.RG_NAME }} --vnet-name infrastructure-vnet --name infrastructure-subnet --query "id" -o tsv | tr -d '[:space:]')
             echo "Subnet-id" $INFRASTRUCTURE_SUBNET_ID
             az containerapp env create --name ${{  inputs.CUSTOMER-ENV-NAME }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }} --infrastructure-subnet-resource-id $INFRASTRUCTURE_SUBNET_ID --internal-only
-            echo "Last step - container app setup"
+            echo "some value verified" ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-ID }} ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }}
             az config set extension.use_dynamic_install=yes_without_prompt
-            az containerapp create --name ${{ inputs.CUSTOMER-CONTAINER-NAME }} --resource-group ${{ secrets.RG_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external
+            az containerapp create --name ${{ inputs.CUSTOMER-CONTAINER-NAME }} --resource-group ${{ secrets.RG_NAME }} --environment ${{  inputs.CUSTOMER-ENV-NAME }} --image ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 80 --ingress external --query properties.configuration.ingress.fqdn
