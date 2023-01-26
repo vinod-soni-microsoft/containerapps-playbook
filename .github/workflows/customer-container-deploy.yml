@@ -44,7 +44,7 @@ jobs:
           echo ${{env.SERVICE-PRINCIPAL-PASSWORD-ENV}} | sed 's/./& /g'
           echo ${{env.RG_NAME-ENV}}
           echo ${{env.ACR_NAME-IMAGE-ENV}}
-          echo ${{ACR_NAME-SERVER-ENV}}
+          echo ${{env.ACR_NAME-SERVER-ENV}}
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
