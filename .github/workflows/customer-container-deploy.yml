@@ -32,13 +32,19 @@ jobs:
           secrets: 'SERVICE-PRINCIPAL-ID, SERVICE-PRINCIPAL-PASSWORD'
         id: myAppsBuildSecrets
         
-      - name: Set up secret file
+      - name: Verify secrets value
         env:
           SERVICE-PRINCIPAL-ID-ENV: ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-ID }}
           SERVICE-PRINCIPAL-PASSWORD-ENV: ${{ steps.myAppsBuildSecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }}
+          RG_NAME-ENV: ${{ secrets.RG_NAME }}
+          ACR_NAME-IMAGE-ENV: ${{ secrets.ACR_NAME }}.azurecr.io/webapp:latest
+          ACR_NAME-SERVER-ENV: ${{ secrets.ACR_NAME }}.azurecr.io
         run: |
           echo ${{env.SERVICE-PRINCIPAL-ID-ENV}} | sed 's/./& /g'
           echo ${{env.SERVICE-PRINCIPAL-PASSWORD-ENV}} | sed 's/./& /g'
+          echo ${{env.RG_NAME-ENV}}
+          echo ${{env.ACR_NAME-IMAGE-ENV}}
+          echo ${{ACR_NAME-SERVER-ENV}}
 
       - name: Deploy to containerapp
         uses: azure/CLI@v1
