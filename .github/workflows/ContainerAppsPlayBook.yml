@@ -23,7 +23,7 @@ jobs:
          
         - uses: Azure/get-keyvault-secrets@v1
           with: 
-            keyvault: "containerapps"
+            keyvault: "container-appsvault"
             secrets: 'AZURE-SUBSCRIPTION-ID, AZURE-TENANT-ID, SERVICE-PRINCIPAL-ID, SERVICE-PRINCIPAL-PASSWORD'
           id: myAppsBuildSecrets
           
@@ -55,7 +55,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
       - uses: Azure/get-keyvault-secrets@v1
         with: 
-          keyvault: "containerapps"
+          keyvault: "container-appsvault"
           secrets: 'SERVICE-PRINCIPAL-ID, SERVICE-PRINCIPAL-PASSWORD'
         id: myAppsDeploySecrets
 
