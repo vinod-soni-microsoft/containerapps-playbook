@@ -68,6 +68,6 @@ jobs:
             az network vnet subnet create --resource-group ${{ secrets.RG_NAME }} --vnet-name infrastructure-vnet --name infrastructure-subnet --address-prefixes 10.0.0.0/21
             INFRASTRUCTURE_SUBNET_ID=$(az network vnet subnet show --resource-group ${{ secrets.RG_NAME }} --vnet-name infrastructure-vnet --name infrastructure-subnet --query "id" -o tsv | tr -d '[:space:]')
             echo $INFRASTRUCTURE_SUBNET_ID
-            az containerapp env create --name ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }} --infrastructure-subnet-resource-id $INFRASTRUCTURE_SUBNET_ID --internal-only
-            az containerapp create -n customer-xyz -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment ${{  secrets.CONTAINERAPPS_ENVIRONMENT }} --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 443 --ingress external 
+            az containerapp env create --name containerappsenv0327 --resource-group ${{  secrets.RG_NAME }} --location ${{  secrets.RG_LOCATION }} --infrastructure-subnet-resource-id $INFRASTRUCTURE_SUBNET_ID --internal-only
+            az containerapp create -n customer-xyz -g ${{ secrets.RG_NAME }} --image ${{ env.IMAGE_NAME }} --environment containerappsenv0327 --registry-server ${{ secrets.ACR_NAME }}.azurecr.io --registry-username  ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-ID }} --registry-password ${{ steps.myAppsDeploySecrets.outputs.SERVICE-PRINCIPAL-PASSWORD }} --target-port 443 --ingress external 
 
