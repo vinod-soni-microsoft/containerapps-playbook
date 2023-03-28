@@ -1,0 +1,75 @@
+system [ ~ ]$ CONTAINERAPPS_ENVIRONMENT=containerappsenv0327
+system [ ~ ]$ echo $CONTAINERAPPS_ENVIRONMENT
+containerappsenv0327
+system [ ~ ]$ RESOURCE_GROUP=rg_containerapps
+system [ ~ ]$ echo $RESOURCE_GROUP
+rg_containerapps
+system [ ~ ]$ ENVIRONMENT_DEFAULT_DOMAIN=`az containerapp env show --name ${CONTAINERAPPS_ENVIRONMENT} --resource-group ${RESOURCE_GROUP} --query properties.defaultDomain --out json | tr -d '"'`
+system [ ~ ]$ echo $ENVIRONMENT_DEFAULT_DOMAIN
+wittyrock-ca08e605.eastus.azurecontainerapps.io
+system [ ~ ]$ ENVIRONMENT_STATIC_IP=`az containerapp env show --name ${CONTAINERAPPS_ENVIRONMENT} --resource-group ${RESOURCE_GROUP} --query properties.staticIp --out json | tr -d '"'`
+system [ ~ ]$ echo $ENVIRONMENT_STATIC_IP
+10.0.0.152
+system [ ~ ]$ VNET_NAME=infrastructure-vnet
+system [ ~ ]$ VNET_ID=`az network vnet show --resource-group ${RESOURCE_GROUP} --name ${VNET_NAME} --query id --out json | tr -d '"'`
+system [ ~ ]$ az network private-dns zone create \
+  --resource-group $RESOURCE_GROUP \
+  --name $ENVIRONMENT_DEFAULT_DOMAIN
+{
+  "etag": "639a909c-915b-4898-aca7-d14975745ba9",
+  "id": "/subscriptions/8c2cd9b8-22c8-45bf-b410-daa03c9dde31/resourceGroups/rg_containerapps/providers/Microsoft.Network/privateDnsZones/wittyrock-ca08e605.eastus.azurecontainerapps.io",
+  "location": "global",
+  "maxNumberOfRecordSets": 25000,
+  "maxNumberOfVirtualNetworkLinks": 1000,
+  "maxNumberOfVirtualNetworkLinksWithRegistration": 100,
+  "name": "wittyrock-ca08e605.eastus.azurecontainerapps.io",
+  "numberOfRecordSets": 1,
+  "numberOfVirtualNetworkLinks": 0,
+  "numberOfVirtualNetworkLinksWithRegistration": 0,
+  "provisioningState": "Succeeded",
+  "resourceGroup": "rg_containerapps",
+  "tags": null,
+  "type": "Microsoft.Network/privateDnsZones"
+}
+system [ ~ ]$ az network private-dns link vnet create \
+  --resource-group $RESOURCE_GROUP \
+  --name $VNET_NAME \
+  --virtual-network $VNET_ID \
+  --zone-name $ENVIRONMENT_DEFAULT_DOMAIN -e true
+{
+  "etag": "\"fa02ac23-0000-0100-0000-642366300000\"",
+  "id": "/subscriptions/8c2cd9b8-22c8-45bf-b410-daa03c9dde31/resourceGroups/rg_containerapps/providers/Microsoft.Network/privateDnsZones/wittyrock-ca08e605.eastus.azurecontainerapps.io/virtualNetworkLinks/infrastructure-vnet",
+  "location": "global",
+  "name": "infrastructure-vnet",
+  "provisioningState": "Succeeded",
+  "registrationEnabled": true,
+  "resourceGroup": "rg_containerapps",
+  "tags": null,
+  "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+  "virtualNetwork": {
+    "id": "/subscriptions/8c2cd9b8-22c8-45bf-b410-daa03c9dde31/resourceGroups/rg_containerapps/providers/Microsoft.Network/virtualNetworks/infrastructure-vnet",
+    "resourceGroup": "rg_containerapps"
+  },
+  "virtualNetworkLinkState": "InProgress"
+}
+system [ ~ ]$ az network private-dns record-set a add-record \
+  --resource-group $RESOURCE_GROUP \
+  --record-set-name "*" \
+  --ipv4-address $ENVIRONMENT_STATIC_IP \
+  --zone-name $ENVIRONMENT_DEFAULT_DOMAIN
+{
+  "aRecords": [
+    {
+      "ipv4Address": "10.0.0.152"
+    }
+  ],
+  "etag": "8d781e27-f10a-4651-8b31-391041a44d0b",
+  "fqdn": "*.wittyrock-ca08e605.eastus.azurecontainerapps.io.",
+  "id": "/subscriptions/8c2cd9b8-22c8-45bf-b410-daa03c9dde31/resourceGroups/rg_containerapps/providers/Microsoft.Network/privateDnsZones/wittyrock-ca08e605.eastus.azurecontainerapps.io/A/*",
+  "isAutoRegistered": false,
+  "metadata": null,
+  "name": "*",
+  "resourceGroup": "rg_containerapps",
+  "ttl": 3600,
+  "type": "Microsoft.Network/privateDnsZones/A"
+}
